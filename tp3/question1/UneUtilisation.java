@@ -1,5 +1,9 @@
 package question1;
 
+/*
+ * Diana Kanaan
+ */
+
 public class UneUtilisation {
 
 	public static void main(String[] args) throws Exception {
@@ -23,6 +27,6 @@ public class UneUtilisation {
 												// produit
 		} catch (Exception e) {
 			e.printStackTrace();
-		} // catch
+			System.out.println("(Exception levée successivement)");		} // catch
 	} // main()
 } // UneUtilisation

@@ -27,14 +27,17 @@ public class Pile4 implements PileI, Cloneable {
 		}
 
 		public Maillon suivant() {
+		    
 			return this.suivant;
 		}
 
 		public Object element() {
+		    
 			return this.element;
 		}
 
 		public Object clone() throws CloneNotSupportedException {
+		    
 			Maillon m = (Maillon) super.clone();
 			m.element = element;
 			return m;
@@ -48,33 +51,58 @@ public class Pile4 implements PileI, Cloneable {
 	 *            la taille de la pile, la taille doit être > 0
 	 */
 	public Pile4(int taille) {
-		if (taille <= 0)
+	    
+		if (taille <= 0){
 			taille = CAPACITE_PAR_DEFAUT;
+               }
+         
 		this.stk = null;
+		
 		this.capacite = taille;
+		
+		this.nombre=0;
+		
 	}
 
 	public Pile4() {
+	    
 		this(PileI.CAPACITE_PAR_DEFAUT);
 	}
 
 	public void empiler(Object o) throws PilePleineException {
-		if (estPleine())
+	    
+		if (estPleine()){
 			throw new PilePleineException();
-		// à compléter
+               }
+		nombre++;
+		
+	        Maillon m = new Maillon(o, stk);
+	        
+                stk = m;
+                
 	}
 
 	public Object depiler() throws PileVideException {
-		if (estVide())
+	    
+		if (estVide()){
 			throw new PileVideException();
-		// à compléter
-		return null;
+               }
+		Object object = stk.element();
+		
+                stk = stk.suivant();
+                
+                nombre--;
+                
+                return object;
 	}
 
 	public Object sommet() throws PileVideException {
-		if (estVide())
+	    
+		if (estVide()){
 			throw new PileVideException();
-		return null; // à compléter
+               }
+               
+		return stk.element(); 
 	}
 
 	/**
@@ -83,7 +111,8 @@ public class Pile4 implements PileI, Cloneable {
 	 * @return vrai si la pile est vide, faux autrement
 	 */
 	public boolean estVide() {
-		return false; // à compléter
+	    
+		return stk == null;
 	}
 
 	/**
@@ -92,7 +121,8 @@ public class Pile4 implements PileI, Cloneable {
 	 * @return vrai si la pile est pleine, faux autrement
 	 */
 	public boolean estPleine() {
-		return false; // à compléter
+	    
+		return capacite == nombre; 
 	}
 
 	/**
@@ -103,28 +133,141 @@ public class Pile4 implements PileI, Cloneable {
 	 */
 	public String toString() {
 
-		String s = "[";
-		// à compléter
-		return s + "]";
-	}
+	
+        Maillon premier = stk;
+	
+        String str = "[";
+        
+        while (stk != null)   
+        {
+            if(stk.element()==null)
+            {
+                str+="null";
+            }
+            else
+            {
+                str+=stk.element().toString();
+            }
+            
+            stk = stk.suivant();
+           
+            if(stk!=null) str+=", ";    
+        }
+        
+        stk = premier;
+        
+        return str + "]";
+	
+    }
 
 	public boolean equals(Object o) {
-		if (o instanceof Pile4) {
-			// à compléter
-			return false;
-		}
-		return false;
-	}
+	    
+		
+        if(!(o instanceof PileI))
+           
+        return false;
+            
+        PileI pile = (PileI)o;
+        
+        int capacite = this.capacite();
+        
+        int taille = this.taille();
+       
+        if(capacite != pile.capacite())
+        
+        return false;
+            
+        if(taille != pile.taille())
+        
+        return false;
+            
+        if(taille == 0)
+        
+        return true;
+        
+        if(o == null)
+       
+        return false;
+        
+        if(super.equals(o))
+           
+        return true;
+            
+        Pile4 tempPile2 = new Pile4(pile.taille());
+        
+        Maillon maillon1 = stk;
+        
+        boolean equals;
+        
+        while (!pile.estVide() && stk!=null){
+            try{
+                equals = false;
+                if(this.sommet() == null){
+                    if(pile.sommet() == null) {
+                        equals = true;
+                    }
+                }
+                else if(pile.sommet() == null){
+                    if(this.sommet() == null) {
+                        equals = true;
+                    }
+                }
+                else if(stk.element().equals(pile.sommet())){
+                    equals = true;
+                }
+                if(equals){
+                    stk = stk.suivant();
+                    tempPile2.empiler(pile.depiler());
+                }
+                else {
+                    stk = maillon1;
+                    loadPile(tempPile2, pile);
+                    return false;
+                }
+            } 
+           
+            catch(PilePleineException pple){pple.printStackTrace();}
+           
+            catch(PileVideException vide){vide.printStackTrace();}
+        }
+        
+       
+        stk = maillon1;
+       
+        loadPile(tempPile2, pile);
+        
+        return true;
+    }
+    
+    private void loadPile(PileI p1, PileI p2){
+        
+        while(!p1.estVide()){
+            
+            try{
+             
+                p2.empiler(p1.depiler());
+           
+            } catch (PileVideException vide){vide.printStackTrace();}
+           
+            catch (PilePleineException pple){pple.printStackTrace();}
+        
+        }
+    
+    }
 
 	public int capacite() {
+	    
 		return this.capacite;
 	}
 
 	public int hashCode() {
+	    
 		return toString().hashCode();
 	}
 
 	public int taille() {
+	    
 		return nombre;
 	}
+	
 }
